@@ -1,0 +1,14 @@
+k9s:
+  cluster: arn:aws:eks:eu-west-1:682626262694:cluster/stop-the-account-abuse
+  namespace:
+    active: zesty-system
+    lockFavorites: false
+    favorites:
+      - zesty-system
+      - all
+      - default
+  view:
+    active: pods
+  featureGates:
+    nodeShell: false
+  proxy: null

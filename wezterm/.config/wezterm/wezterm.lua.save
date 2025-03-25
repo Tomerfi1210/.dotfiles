@@ -1,0 +1,19 @@
+local wezterm = require("wezterm")
+local act = wezterm.action
+
+local config = {}
+if wezterm.config_builder then
+	config = wezterm.config_builder()
+end
+
+-- Settings
+local mux = wezterm.mux
+wezterm.on("gui-startup", function()
+	local _, _, window = mux.spawn_window({})
+	window:gui_window():maximize()
+end)
+
+-- config.color_scheme = "Tokyo Night"
+config.color_scheme = "catppuccin-mocha" -- latte, frappe, macchiato, mocha
+config.font = wezterm.font_with_fallback({
+	{ family = "JetBra

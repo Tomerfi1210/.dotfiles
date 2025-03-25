@@ -1,0 +1,11 @@
+k9s:
+  namespace:
+    active: default
+    lockFavorites: false
+    favorites:
+      - default
+  view:
+    active: pod
+  featureGates:
+    nodeShell: false
+  proxy: null

@@ -1,0 +1,12 @@
+k9s:
+  cluster: arn:aws:eks:eu-west-1:672188301118:cluster/production
+  namespace:
+    active: default
+    lockFavorites: false
+    favorites:
+    - default
+  view:
+    active: context
+  featureGates:
+    nodeShell: false
+  portForwardAddress: localhost

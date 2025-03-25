@@ -1,0 +1,14 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:473301030746:cluster/kompass-visibility-sanity
+  namespace:
+    active: zesty-system
+    lockFavorites: false
+    favorites:
+      - zesty-system
+      - all
+      - default
+  view:
+    active: namespace
+  featureGates:
+    nodeShell: false
+  proxy: null

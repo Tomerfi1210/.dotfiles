@@ -1,0 +1,15 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:577926974532:cluster/ido-karpenter-3-3
+  namespace:
+    active: zesty-system
+    lockFavorites: false
+    favorites:
+    - monitoring
+    - all
+    - zesty-system
+    - default
+  view:
+    active: dp
+  featureGates:
+    nodeShell: false
+  portForwardAddress: localhost
