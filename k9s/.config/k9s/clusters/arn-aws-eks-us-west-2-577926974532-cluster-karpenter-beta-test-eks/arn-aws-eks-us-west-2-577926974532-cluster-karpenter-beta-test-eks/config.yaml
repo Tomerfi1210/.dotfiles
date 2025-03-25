@@ -1,0 +1,16 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:577926974532:cluster/karpenter-beta-test-eks
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - spinnaker
+      - zesty-system
+      - all
+      - default
+      - kube-system
+  view:
+    active: pods
+  featureGates:
+    nodeShell: false
+  proxy: null

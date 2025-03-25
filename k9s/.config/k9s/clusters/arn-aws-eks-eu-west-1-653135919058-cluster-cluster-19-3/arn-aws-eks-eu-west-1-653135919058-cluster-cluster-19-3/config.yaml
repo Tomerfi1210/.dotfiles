@@ -1,0 +1,13 @@
+k9s:
+  cluster: arn:aws:eks:eu-west-1:653135919058:cluster/cluster-19-3
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - all
+      - default
+  view:
+    active: context
+  featureGates:
+    nodeShell: false
+  proxy: null

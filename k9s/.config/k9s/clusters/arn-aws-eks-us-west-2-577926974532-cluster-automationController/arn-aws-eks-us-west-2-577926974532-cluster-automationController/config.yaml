@@ -1,0 +1,13 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:577926974532:cluster/automationController
+  namespace:
+    active: default
+    lockFavorites: false
+    favorites:
+    - all
+    - default
+  view:
+    active: deploy
+  featureGates:
+    nodeShell: false
+  portForwardAddress: localhost

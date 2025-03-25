@@ -1,0 +1,13 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:577926974532:cluster/eks-creator-final-final
+  namespace:
+    active: default
+    lockFavorites: false
+    favorites:
+    - default
+    - all
+  view:
+    active: po
+  featureGates:
+    nodeShell: false
+  portForwardAddress: localhost

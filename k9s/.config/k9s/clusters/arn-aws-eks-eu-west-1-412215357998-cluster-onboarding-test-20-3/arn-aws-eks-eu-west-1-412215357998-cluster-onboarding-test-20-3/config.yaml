@@ -1,0 +1,13 @@
+k9s:
+  cluster: arn:aws:eks:eu-west-1:412215357998:cluster/onboarding-test-20-3
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - all
+      - default
+  view:
+    active: po
+  featureGates:
+    nodeShell: false
+  proxy: null

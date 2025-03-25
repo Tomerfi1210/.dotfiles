@@ -1,0 +1,14 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:577926974532:cluster/karpenter-stable-test-eks
+  namespace:
+    active: zesty-system
+    lockFavorites: false
+    favorites:
+      - zesty-system
+      - all
+      - default
+  view:
+    active: secret
+  featureGates:
+    nodeShell: false
+  proxy: null
