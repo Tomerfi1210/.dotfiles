@@ -8,7 +8,7 @@ k9s:
       - all
       - default
   view:
-    active: namespace
+    active: deploy
   featureGates:
     nodeShell: false
   proxy: null

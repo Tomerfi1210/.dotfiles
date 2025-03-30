@@ -136,8 +136,6 @@ return { -- LSP Configuration & Plugins
           },
         },
       },
-      dockerls = {},
-      docker_compose_language_service = {},
       gopls = {
         cmd = { 'gopls' },
         filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
@@ -170,13 +168,37 @@ return { -- LSP Configuration & Plugins
           },
         },
       },
-      basedpyright = {
-        settings = {
-          basedpyright = {
-            typeCheckingMode = 'standard',
-          },
-        },
-      },
+      -- pyright = {},
+      -- basedpyright = {
+      --   settings = {
+      --     basedpyright = {
+      --       analyses = {
+      --         typeCheckingMode = 'standard',
+      --       },
+      --     },
+      --   },
+      -- },
+      -- black = {},
+      -- basedpyright = {
+      --   settings = {
+      --     basedpyright = {
+      --       analysis = {
+      --         diagnosticMode = 'openFilesOnly',
+      --         typeCheckingMode = 'basic',
+      --         capabilities = capabilities,
+      --         useLibraryCodeForTypes = true,
+      --         diagnosticSeverityOverrides = {
+      --           autoSearchPaths = true,
+      --           enableTypeIgnoreComments = false,
+      --           reportGeneralTypeIssues = 'none',
+      --           reportArgumentType = 'none',
+      --           reportUnknownMemberType = 'none',
+      --           reportAssignmentType = 'none',
+      --         },
+      --       },
+      --     },
+      --   },
+      -- },
       -- basedpyright = {
       --   -- Config options: https://github.com/DetachHead/basedpyright/blob/main/docs/settings.md
       --   settings = {
@@ -241,6 +263,8 @@ return { -- LSP Configuration & Plugins
       terraformls = {},
       helm_ls = { cmd = { 'helm_ls', 'serve' }, filetypes = { 'helm' } },
       bashls = {},
+      dockerls = {},
+      docker_compose_language_service = {},
       graphql = {},
       cssls = {},
       ltex = {},
