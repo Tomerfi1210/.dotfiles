@@ -1,7 +1,7 @@
 k9s:
   cluster: arn:aws:eks:us-west-2:473301030746:cluster/staging
   namespace:
-    active: all
+    active: zesty-k8s
     lockFavorites: false
     favorites:
       - integration
@@ -14,7 +14,7 @@ k9s:
       - karpenter
       - aws-karpenter-zesty
   view:
-    active: secret
+    active: pods
   featureGates:
     nodeShell: false
   proxy: null
