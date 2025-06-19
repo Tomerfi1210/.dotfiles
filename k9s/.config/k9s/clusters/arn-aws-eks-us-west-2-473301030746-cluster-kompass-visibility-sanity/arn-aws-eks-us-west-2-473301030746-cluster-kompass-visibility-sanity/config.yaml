@@ -8,7 +8,7 @@ k9s:
       - all
       - default
   view:
-    active: deploy
+    active: context
   featureGates:
     nodeShell: false
   proxy: null

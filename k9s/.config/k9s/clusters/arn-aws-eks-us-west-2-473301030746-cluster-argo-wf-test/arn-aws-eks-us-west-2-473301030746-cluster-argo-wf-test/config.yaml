@@ -1,0 +1,14 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:473301030746:cluster/argo-wf-test
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - all
+      - zesty-system
+      - default
+  view:
+    active: pods
+  featureGates:
+    nodeShell: false
+  proxy: null

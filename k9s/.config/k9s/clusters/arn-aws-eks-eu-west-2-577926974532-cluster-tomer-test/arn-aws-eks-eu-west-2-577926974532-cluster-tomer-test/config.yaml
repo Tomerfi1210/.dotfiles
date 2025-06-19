@@ -1,0 +1,13 @@
+k9s:
+  cluster: arn:aws:eks:eu-west-2:577926974532:cluster/tomer-test
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - all
+      - default
+  view:
+    active: po
+  featureGates:
+    nodeShell: false
+  proxy: null

@@ -1,0 +1,14 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:473301030746:cluster/Itay-eks-with-karpenter-v2
+  namespace:
+    active: zesty-system
+    lockFavorites: false
+    favorites:
+      - zesty-system
+      - all
+      - default
+  view:
+    active: customresourcedefinition
+  featureGates:
+    nodeShell: false
+  proxy: null

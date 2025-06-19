@@ -1,0 +1,13 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:473301030746:cluster/demo-staging
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - all
+      - default
+  view:
+    active: po
+  featureGates:
+    nodeShell: false
+  proxy: null

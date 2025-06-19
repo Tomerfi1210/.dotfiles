@@ -1,0 +1,13 @@
+k9s:
+  cluster: arn:aws:eks:eu-west-1:533252222433:cluster/casual-classical-hideout
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - all
+      - default
+  view:
+    active: pods
+  featureGates:
+    nodeShell: false
+  proxy: null

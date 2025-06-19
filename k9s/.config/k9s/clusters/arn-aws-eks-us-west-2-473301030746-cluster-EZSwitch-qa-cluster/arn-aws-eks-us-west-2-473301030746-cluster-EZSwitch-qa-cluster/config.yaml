@@ -1,0 +1,14 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:473301030746:cluster/EZSwitch-qa-cluster
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - all
+      - gpu-pods
+      - default
+  view:
+    active: deploy
+  featureGates:
+    nodeShell: false
+  proxy: null

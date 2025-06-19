@@ -1,0 +1,14 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:473301030746:cluster/greenlight-guru-test-cluster
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - all
+      - ambassador
+      - default
+  view:
+    active: deploy
+  featureGates:
+    nodeShell: false
+  proxy: null

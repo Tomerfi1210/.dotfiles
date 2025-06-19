@@ -1,0 +1,13 @@
+k9s:
+  cluster: arn:aws:eks:us-west-2:473301030746:cluster/qa-autoscaler-cluster
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - all
+      - default
+  view:
+    active: pod
+  featureGates:
+    nodeShell: false
+  proxy: null

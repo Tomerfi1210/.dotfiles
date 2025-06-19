@@ -1,0 +1,14 @@
+k9s:
+  cluster: arn:aws:eks:eu-west-1:650891365826:cluster/onboarding-test-22-5
+  namespace:
+    active: all
+    lockFavorites: false
+    favorites:
+      - zesty-system
+      - all
+      - default
+  view:
+    active: deploy
+  featureGates:
+    nodeShell: false
+  proxy: null

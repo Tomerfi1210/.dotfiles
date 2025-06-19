@@ -1,20 +1,20 @@
 k9s:
   cluster: arn:aws:eks:us-west-2:473301030746:cluster/staging
   namespace:
-    active: zesty-k8s
+    active: integration
     lockFavorites: false
     favorites:
-      - integration
-      - zesty-k8s
-      - zesty-kompass-compute
-      - zesty-system
       - all
-      - azure
       - argocd
+      - zesty-kompass-compute
+      - integration
+      - zesty-system
+      - azure
+      - default
+      - zesty-k8s
       - karpenter
-      - aws-karpenter-zesty
   view:
-    active: pods
+    active: context
   featureGates:
     nodeShell: false
   proxy: null
