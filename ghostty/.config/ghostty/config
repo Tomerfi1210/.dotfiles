@@ -1,0 +1,41 @@
+# Font settings
+font-family = JetBrains Mono
+font-style = false
+font-size = 12.5
+font-thicken = true
+
+# Background settings
+# Using a darker version of the image for better text visibility
+# background-image = /Users/tomerfisher/.dotfiles/wezterm/.config/wezterm/luffy_gear_5_nightly_3.png
+background-image = /Users/tomerfisher/.dotfiles/wezterm/.config/wezterm/luffy.jpg
+background-image-fit = stretch
+background-image-position = center
+background-image-opacity = 0.4
+background = #000000
+background-opacity = 1.0
+maximize = true
+
+# Window settings
+window-decoration = false
+macos-titlebar-style = transparent
+macos-option-as-alt = true
+macos-window-shadow = false
+window-padding-x = 3
+window-padding-y = 0
+window-subtitle = false
+mouse-hide-while-typing = true
+
+# Cursor settings
+cursor-style = bar
+cursor-style-blink = false
+
+# Tab bar settings
+window-show-tab-bar = never
+
+# Color scheme settings
+foreground = #FFFFFF
+minimum-contrast = 2.0
+bold-color = #FFFFFF
+
+# Hyperlink rules
+# Ghostty doesn't support the same hyperlink rules as WezTerm, but you can add basic URL detection

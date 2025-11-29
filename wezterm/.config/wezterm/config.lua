@@ -26,7 +26,7 @@ config = {
   background = {
     {
       source = {
-        File = '/Users/' .. os.getenv 'USER' .. '/.config/wezterm/luffy_gear_5_nightly_3.png',
+        File = '/Users/tomerfisher/.dotfiles/wezterm/.config/wezterm/luffy.jpg',
       },
       hsb = {
         hue = 1.0,

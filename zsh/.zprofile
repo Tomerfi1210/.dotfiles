@@ -1,9 +1,10 @@
-# Amazon Q pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zprofile.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zprofile.pre.zsh"
+# Kiro CLI pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.pre.zsh"
 # Q pre block. Keep at the top of this file.
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export PATH="/Applications/PyCharm.app/Contents/MacOS:${PATH}"
+export PATH="$(go env GOPATH)/bin:$PATH"
 
 # if [ -d ".venv" ]; then
 #     source .venv/bin/activate
@@ -31,5 +32,5 @@ source <(fzf --zsh)
 PATH="/Library/Frameworks/Python.framework/Versions/3.11/bin:${PATH}"
 export PATH
 
-# Amazon Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zprofile.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zprofile.post.zsh"
+# Kiro CLI post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.post.zsh"
