@@ -7,7 +7,7 @@ font-thicken = true
 # Background settings
 # Using a darker version of the image for better text visibility
 # background-image = /Users/tomerfisher/.dotfiles/wezterm/.config/wezterm/luffy_gear_5_nightly_3.png
-background-image = /Users/tomerfisher/.dotfiles/wezterm/.config/wezterm/luffy.jpg
+background-image = /Users/tomerfisher/.dotfiles/ghostty/.config/ghostty/mDmJcSD-dark-blue-backgrounds.jpg
 background-image-fit = stretch
 background-image-position = center
 background-image-opacity = 0.4
