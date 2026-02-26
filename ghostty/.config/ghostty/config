@@ -1,41 +1,101 @@
-# Font settings
-font-family = CaskaydiaMono Nerd Font
+# =============================================================================
+# Ghostty Configuration
+# =============================================================================
+
+# --- Font -------------------------------------------------------------------
+font-family = CaskaydiaMono Nerd Font Mono
+font-family-bold = CaskaydiaMono Nerd Font Mono
+font-family-italic = CaskaydiaMono Nerd Font Mono
+font-family-bold-italic = CaskaydiaMono Nerd Font Mono
 font-style = Regular
-font-size = 12.5
+font-style-bold = Bold
+font-style-italic = Italic
+font-style-bold-italic = Bold Italic
+font-size = 15
 font-thicken = true
+font-feature = calt
 
-# Background settings
-# Using a darker version of the image for better text visibility
-# background-image = /Users/tomerfisher/.dotfiles/wezterm/.config/wezterm/luffy_gear_5_nightly_3.png
-background-image = /Users/tomerfisher/.dotfiles/ghostty/.config/ghostty/mDmJcSD-dark-blue-backgrounds.jpg
-background-image-fit = stretch
-background-image-position = center
-background-image-opacity = 0.4
+# --- Theme -------------------------------------------------------------------
+theme = TokyoNight Storm
+# Override background for the background image (pure black base)
 background = #000000
-background-opacity = 1.0
-maximize = true
+minimum-contrast = 1.5
 
-# Window settings
+# --- Background Image --------------------------------------------------------
+background-image = /Users/tomerfisher/.dotfiles/ghostty/.config/ghostty/mDmJcSD-dark-blue-backgrounds.jpg
+background-image-fit = cover
+background-image-position = center
+background-image-opacity = 0.35
+background-opacity = 0.95
+background-blur = 20
+
+# --- Window ------------------------------------------------------------------
 window-decoration = false
-macos-titlebar-style = transparent
-macos-option-as-alt = true
-macos-window-shadow = false
-window-padding-x = 3
-window-padding-y = 0
-window-subtitle = false
+window-padding-x = 5
+window-padding-y = 5
+window-padding-balance = true
+maximize = true
 mouse-hide-while-typing = true
+confirm-close-surface = false
+unfocused-split-opacity = 0.85
 
-# Cursor settings
+# --- Cursor ------------------------------------------------------------------
 cursor-style = bar
 cursor-style-blink = false
+shell-integration-features = no-cursor
 
-# Tab bar settings
+# --- Tab Bar -----------------------------------------------------------------
 window-show-tab-bar = never
 
-# Color scheme settings
-foreground = #FFFFFF
-minimum-contrast = 2.0
-bold-color = #FFFFFF
+# --- Clipboard ---------------------------------------------------------------
+copy-on-select = clipboard
 
-# Hyperlink rules
-# Ghostty doesn't support the same hyperlink rules as WezTerm, but you can add basic URL detection
+# --- Scrollback --------------------------------------------------------------
+scrollback-limit = 10000000
+
+# --- Keybindings (Vim-style, Alt-based) --------------------------------------
+
+# Tab management
+keybind = alt+shift+t=new_tab
+keybind = alt+one=goto_tab:1
+keybind = alt+two=goto_tab:2
+keybind = alt+three=goto_tab:3
+keybind = alt+four=goto_tab:4
+keybind = alt+five=goto_tab:5
+
+# Split management
+keybind = alt+shift+v=new_split:right
+keybind = alt+shift+s=new_split:down
+
+# Split navigation (vim hjkl)
+keybind = alt+shift+h=goto_split:left
+keybind = alt+shift+j=goto_split:bottom
+keybind = alt+shift+k=goto_split:top
+keybind = alt+shift+l=goto_split:right
+
+# Send raw ctrl codes for tmux/neovim navigation compatibility
+keybind = ctrl+h=text:\x08
+keybind = ctrl+j=text:\x0a
+keybind = ctrl+k=text:\x0b
+keybind = ctrl+l=text:\x0c
+
+# Font size
+keybind = alt+equal=increase_font_size:1
+keybind = alt+minus=decrease_font_size:1
+keybind = alt+zero=reset_font_size
+
+# Utilities
+keybind = alt+shift+c=copy_to_clipboard
+keybind = alt+shift+enter=toggle_fullscreen
+keybind = alt+shift+q=close_surface
+keybind = alt+shift+comma=reload_config
+keybind = alt+shift+i=inspector:toggle
+
+# --- Shell / Environment -----------------------------------------------------
+# Use `env` directive instead of `command` override so Ghostty launches a
+# proper login shell (which sources .zprofile -> brew shellenv -> PATH).
+# Using `command = env ... $SHELL` forces /bin/sh -c wrapping = non-login shell.
+env = ENABLE_TMUX_STARTUP=true
+
+# --- OS-specific config (loaded if file exists) ------------------------------
+config-file = ?config-macos
