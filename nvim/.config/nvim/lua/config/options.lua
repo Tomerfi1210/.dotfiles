@@ -10,3 +10,4 @@ end
 vim.g.lazyvim_python_lsp = "basedpyright"
 local opt = vim.opt
 opt.wrap = true
+opt.signcolumn = "yes:1"
