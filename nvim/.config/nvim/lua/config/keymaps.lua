@@ -25,11 +25,14 @@ map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit Terminal Mode" })
 -- Better paste in visual mode (don't yank replaced text)
 map("x", "<leader>p", [["_dP]], { desc = "Paste Without Yank" })
 
--- Quick save
-map("n", "<C-s>", "<cmd>w<CR>", { desc = "Save File" })
+-- Quick save (++p auto-creates parent directories, neovim 0.12)
+map("n", "<C-s>", "<cmd>w ++p<CR>", { desc = "Save File" })
 
 -- DAP breakpoint toggle -- map every possible F9 keycode for Ghostty compatibility
 -- Ghostty may send F9 as <F9>, <F21>, or a CSI u sequence depending on config
 for _, key in ipairs({ "<F9>", "<F21>", "<F33>" }) do
   map("n", key, function() require("dap").toggle_breakpoint() end, { desc = "Toggle Breakpoint" })
 end
+
+-- Built-in undo tree visualizer (neovim 0.12)
+map("n", "<leader>uu", "<cmd>Undotree<CR>", { desc = "Undo Tree" })

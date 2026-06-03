@@ -62,6 +62,16 @@ return {
         -- Indent guides
         hl.IndentBlanklineChar = { fg = c.bg_highlight }
         hl.IblIndent = { fg = c.bg_highlight }
+
+        -- Neovim 0.12 highlight groups
+        hl.DiffTextAdd = { bg = c.diff.add, fg = c.fg }
+        hl.PmenuBorder = { fg = c.blue, bg = c.none }
+        hl.PmenuShadow = { bg = c.none }
+        hl.PmenuShadowThrough = { bg = c.none }
+        hl.SnippetTabstopActive = { bg = c.bg_visual }
+        hl.OkMsg = { fg = c.green1 }
+        hl.StderrMsg = { fg = c.red1 }
+        hl.StdoutMsg = { fg = c.fg }
       end,
       -- Transparent statusline
       on_colors = function(colors)

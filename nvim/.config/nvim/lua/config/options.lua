@@ -11,3 +11,13 @@ vim.g.lazyvim_python_lsp = "basedpyright"
 local opt = vim.opt
 opt.wrap = true
 opt.signcolumn = "yes:1"
+
+-- Neovim 0.12: native popup menu styling
+opt.pumborder = "rounded"
+opt.pummaxwidth = 60
+
+-- Neovim 0.12: global floating window border (matches DAP UI rounded style)
+opt.winborder = "rounded"
+
+-- Neovim 0.12: word-level inline diff highlighting
+vim.opt.diffopt:append("inline:word")

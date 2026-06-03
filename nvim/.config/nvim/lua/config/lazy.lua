@@ -44,7 +44,7 @@ require("lazy").setup({
         -- "matchparen",
         -- "netrwPlugin",
         "tarPlugin",
-        "tohtml",
+        -- "tohtml", -- opt-in by default in neovim 0.12
         "tutor",
         "zipPlugin",
       },

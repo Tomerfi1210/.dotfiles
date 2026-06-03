@@ -63,29 +63,29 @@ return {
       { "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
     },
 
+    -- Define signs BEFORE nvim-dap loads so sign_try_define sees them
+    -- and doesn't override with plain text defaults
+    -- Note: Neovim 0.12 drops nerd font icons with 0 display width, use unicode instead
+    init = function()
+      vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+      vim.fn.sign_define("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = "" })
+      vim.fn.sign_define("DapBreakpointCondition", { text = "◆", texthl = "DapBreakpointCondition", linehl = "", numhl = "" })
+      vim.fn.sign_define("DapLogPoint", { text = "◈", texthl = "DapLogPoint", linehl = "", numhl = "" })
+      vim.fn.sign_define("DapStopped", { text = "▶", texthl = "DapStopped", linehl = "DapStoppedLine", numhl = "" })
+      vim.fn.sign_define("DapBreakpointRejected", { text = "○", texthl = "DapBreakpoint", linehl = "", numhl = "" })
+    end,
+
     config = function()
       -- load mason-nvim-dap here, after all adapters have been setup
       if LazyVim.has("mason-nvim-dap.nvim") then
         require("mason-nvim-dap").setup(LazyVim.opts("mason-nvim-dap.nvim"))
       end
 
-      vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
-
-      -- Pretty DAP signs in the sign column
-      vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DapBreakpoint", linehl = "", numhl = "" })
-      vim.fn.sign_define(
-        "DapBreakpointCondition",
-        { text = "", texthl = "DapBreakpointCondition", linehl = "", numhl = "" }
-      )
-      vim.fn.sign_define("DapLogPoint", { text = "", texthl = "DapLogPoint", linehl = "", numhl = "" })
-      vim.fn.sign_define("DapStopped", { text = "", texthl = "DapStopped", linehl = "DapStoppedLine", numhl = "" })
-      vim.fn.sign_define("DapBreakpointRejected", { text = "", texthl = "DapBreakpoint", linehl = "", numhl = "" })
-
       -- setup dap config by VsCode launch.json file
+      -- Neovim 0.12: use native skip_comments instead of plenary.json.json_strip_comments
       local vscode = require("dap.ext.vscode")
-      local json = require("plenary.json")
       vscode.json_decode = function(str)
-        return vim.json.decode(json.json_strip_comments(str))
+        return vim.json.decode(str, { luanil = { object = true, array = true }, skip_comments = true })
       end
     end,
   },

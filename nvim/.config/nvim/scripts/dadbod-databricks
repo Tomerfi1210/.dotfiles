@@ -1,0 +1,241 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage: dadbod-databricks --warehouse-id ID [options]
+
+Run Databricks SQL through the Databricks CLI for vim-dadbod.
+
+Options:
+  --warehouse-id ID   Databricks SQL warehouse id (required)
+  --profile PROFILE   Databricks CLI profile
+  --catalog CATALOG   Unity Catalog catalog
+  --schema SCHEMA     Schema/database
+  --file FILE         Read SQL from FILE instead of stdin
+  --raw               TSV / machine-readable output
+  --help              Show this help
+
+Requires databricks and jq on PATH. Do not pass secrets in arguments.
+USAGE
+}
+
+die() {
+  printf 'dadbod-databricks: %s\n' "$*" >&2
+  exit 1
+}
+
+require_cmd() {
+  command -v "$1" >/dev/null 2>&1 || die "missing required command: $1"
+}
+
+warehouse_id=""
+profile=""
+catalog=""
+schema=""
+sql_file=""
+raw=0
+
+while (($#)); do
+  case "$1" in
+    --warehouse-id)
+      [[ $# -ge 2 ]] || die '--warehouse-id requires a value'
+      warehouse_id="$2"
+      shift 2
+      ;;
+    --profile)
+      [[ $# -ge 2 ]] || die '--profile requires a value'
+      profile="$2"
+      shift 2
+      ;;
+    --catalog)
+      [[ $# -ge 2 ]] || die '--catalog requires a value'
+      catalog="$2"
+      shift 2
+      ;;
+    --schema)
+      [[ $# -ge 2 ]] || die '--schema requires a value'
+      schema="$2"
+      shift 2
+      ;;
+    --file)
+      [[ $# -ge 2 ]] || die '--file requires a value'
+      sql_file="$2"
+      shift 2
+      ;;
+    --raw)
+      raw=1
+      shift
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      die "unknown argument: $1"
+      ;;
+  esac
+done
+
+require_cmd databricks
+require_cmd jq
+
+[[ -n "$warehouse_id" ]] || die '--warehouse-id is required'
+
+if [[ -n "$sql_file" ]]; then
+  [[ -r "$sql_file" ]] || die "cannot read SQL file: $sql_file"
+  sql="$(<"$sql_file")"
+else
+  sql="$(cat)"
+fi
+
+[[ -n "${sql//[[:space:]]/}" ]] || die 'no SQL provided'
+
+tmpdir="$(mktemp -d)"
+request_file="$tmpdir/request.json"
+response_file="$tmpdir/response.json"
+chunk_file="$tmpdir/chunk.json"
+tsv_file="$tmpdir/results.tsv"
+statement_id=""
+finished=0
+
+cleanup() {
+  local status=$?
+  if [[ $finished -eq 0 && -n "$statement_id" ]]; then
+    local cancel_cmd=(databricks api post "/api/2.0/sql/statements/$statement_id/cancel" --json '{}')
+    [[ -n "$profile" ]] && cancel_cmd+=(--profile "$profile")
+    "${cancel_cmd[@]}" >/dev/null 2>&1 || true
+  fi
+  rm -rf "$tmpdir"
+  exit "$status"
+}
+trap cleanup EXIT INT TERM
+
+jq_args=(--arg warehouse_id "$warehouse_id" --arg statement "$sql")
+jq_filter='{warehouse_id:$warehouse_id, statement:$statement, format:"JSON_ARRAY", disposition:"INLINE", wait_timeout:"10s", on_wait_timeout:"CONTINUE"}'
+if [[ -n "$catalog" ]]; then
+  jq_args+=(--arg catalog "$catalog")
+  jq_filter="$jq_filter + {catalog:\$catalog}"
+fi
+if [[ -n "$schema" ]]; then
+  jq_args+=(--arg schema "$schema")
+  jq_filter="$jq_filter + {schema:\$schema}"
+fi
+
+jq -n "${jq_args[@]}" "$jq_filter" >"$request_file"
+
+api_cmd=(databricks api post /api/2.0/sql/statements --json "@$request_file" -o json)
+[[ -n "$profile" ]] && api_cmd+=(--profile "$profile")
+"${api_cmd[@]}" >"$response_file" || die 'Databricks statement submission failed'
+
+statement_id="$(jq -r '.statement_id // empty' "$response_file")"
+
+deadline=$((SECONDS + 300))
+while :; do
+  state="$(jq -r '.status.state // empty' "$response_file")"
+  case "$state" in
+    SUCCEEDED)
+      finished=1
+      break
+      ;;
+    FAILED|CANCELED|CLOSED)
+      jq -r '.status.error // .status // .' "$response_file" >&2
+      exit 1
+      ;;
+    PENDING|RUNNING|"")
+      [[ -n "$statement_id" ]] || die 'Databricks response did not include statement_id'
+      ((SECONDS < deadline)) || die "timed out waiting for statement $statement_id"
+      sleep 1
+      poll_cmd=(databricks api get "/api/2.0/sql/statements/$statement_id" -o json)
+      [[ -n "$profile" ]] && poll_cmd+=(--profile "$profile")
+      "${poll_cmd[@]}" >"$response_file" || die "failed polling statement $statement_id"
+      ;;
+    *)
+      die "unexpected Databricks statement state: $state"
+      ;;
+  esac
+done
+
+column_count="$(jq '.manifest.schema.columns | length // 0' "$response_file")"
+if ((column_count > 0)); then
+  jq -r '.manifest.schema.columns | map(.name) | @tsv' "$response_file" >"$tsv_file"
+fi
+
+if [[ "$(jq -r '.manifest.truncated // false' "$response_file")" == "true" ]]; then
+  printf 'dadbod-databricks: Databricks reported truncated inline results\n' >&2
+fi
+
+append_rows() {
+  local file="$1"
+  local filter="$2"
+
+  if ((raw)); then
+    jq -r "$filter | .[] | @tsv" "$file" >>"$tsv_file"
+  else
+    jq -r "$filter | .[] | map(if . == null then \"NULL\" else . end) | @tsv" "$file" >>"$tsv_file"
+  fi
+}
+
+format_table() {
+  awk -F '\t' '
+    function repeat(char, count, out) {
+      out = ""
+      while (count-- > 0) out = out char
+      return out
+    }
+    {
+      rows = NR
+      if (NF > cols) cols = NF
+      for (i = 1; i <= NF; i++) {
+        cell[NR, i] = $i
+        if (length($i) > width[i]) width[i] = length($i)
+      }
+    }
+    END {
+      if (rows == 0) exit
+
+      for (row = 1; row <= rows; row++) {
+        line = ""
+        for (i = 1; i <= cols; i++) {
+          value = cell[row, i]
+          line = line (i == 1 ? " " : " | ") sprintf("%-" width[i] "s", value)
+        }
+        print line
+
+        if (row == 1) {
+          separator = ""
+          for (i = 1; i <= cols; i++) {
+            separator = separator (i == 1 ? "" : "+") repeat("-", width[i] + 2)
+          }
+          print separator
+        }
+      }
+
+      printf "(%d rows)\n", rows - 1
+    }
+  '
+}
+
+append_rows "$response_file" '.result.data_array // []'
+
+next_link="$(jq -r '.result.next_chunk_internal_link // empty' "$response_file")"
+while [[ -n "$next_link" ]]; do
+  chunk_cmd=(databricks api get "$next_link" -o json)
+  [[ -n "$profile" ]] && chunk_cmd+=(--profile "$profile")
+  "${chunk_cmd[@]}" >"$chunk_file" || die "failed fetching result chunk: $next_link"
+  append_rows "$chunk_file" '.data_array // .result.data_array // []'
+  next_link="$(jq -r '.next_chunk_internal_link // .result.next_chunk_internal_link // empty' "$chunk_file")"
+done
+
+if ((column_count > 0)); then
+  if ((raw)); then
+    cat "$tsv_file"
+  else
+    format_table <"$tsv_file"
+  fi
+fi
+
+if ((column_count == 0 && raw == 0)); then
+  row_count="$(jq -r '.manifest.total_row_count // .result.row_count // empty' "$response_file")"
+  [[ -n "$row_count" ]] && printf 'OK (%s rows)\n' "$row_count"
+fi
