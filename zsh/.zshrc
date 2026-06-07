@@ -11,6 +11,7 @@
 [[ -o interactive ]] || return 0
 
 # --- Zsh completion (must be early) ---
+fpath+="$(brew --prefix)/share/zsh/site-functions"
 autoload -Uz compinit
 compinit
 
