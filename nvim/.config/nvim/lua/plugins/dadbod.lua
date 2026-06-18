@@ -29,50 +29,36 @@ local function databricks_url()
   return url
 end
 
+local function setup_databricks()
+  local databricks_connection = databricks_url()
+  if databricks_connection then
+    local dbs = type(vim.g.dbs) == "table" and vim.g.dbs or {}
+    if dbs.Databricks == nil then
+      dbs.Databricks = databricks_connection
+    end
+    vim.g.dbs = dbs
+  end
+
+  local table_helpers = type(vim.g.db_ui_table_helpers) == "table" and vim.g.db_ui_table_helpers or {}
+  table_helpers.databricks = table_helpers.databricks
+    or table_helpers.Databricks
+    or {
+      List = "SELECT * FROM {table} LIMIT 200",
+      Columns = "DESCRIBE TABLE {table}",
+    }
+  vim.g.db_ui_table_helpers = table_helpers
+end
+
 return {
   {
-    "tpope/vim-dadbod",
-    cmd = { "DB", "DBUIToggle", "DBUI", "DBUIAddConnection", "DBUIFindBuffer" },
-  },
-  {
     "kristijanhusak/vim-dadbod-ui",
-    dependencies = { "tpope/vim-dadbod" },
-    cmd = { "DBUIToggle", "DBUI", "DBUIAddConnection", "DBUIFindBuffer" },
+    optional = true,
     keys = {
-      { "<leader>D", "<cmd>DBUIToggle<cr>", desc = "Toggle DBUI" },
       { "<leader>rq", "<Plug>(DBUI_ExecuteQuery)", mode = { "n", "v" }, desc = "Run Query" },
     },
     init = function()
-      vim.g.db_ui_use_nerd_fonts = 1
       vim.g.db_ui_save_location = vim.fn.stdpath("config") .. "/db_ui"
-
-      local databricks_connection = databricks_url()
-      if databricks_connection then
-        local dbs = type(vim.g.dbs) == "table" and vim.g.dbs or {}
-        if dbs.Databricks == nil then
-          dbs.Databricks = databricks_connection
-        end
-        vim.g.dbs = dbs
-      end
-
-      local table_helpers = type(vim.g.db_ui_table_helpers) == "table" and vim.g.db_ui_table_helpers or {}
-      table_helpers.databricks = table_helpers.databricks
-        or table_helpers.Databricks
-        or {
-          List = "SELECT * FROM {table} LIMIT 200",
-          Columns = "DESCRIBE TABLE {table}",
-        }
-      vim.g.db_ui_table_helpers = table_helpers
-
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "sql" },
-        command = [[setlocal omnifunc=vim_dadbod_completion#omni]],
-      })
+      setup_databricks()
     end,
-  },
-  {
-    "kristijanhusak/vim-dadbod-completion",
-    ft = { "sql", "mysql", "plsql" },
-    dependencies = { "tpope/vim-dadbod" },
   },
 }
