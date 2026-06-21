@@ -1,38 +1,31 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
-
 local map = vim.keymap.set
 
--- Tmux session picker
-map("n", "<C-f>", "<cmd>silent !tmux neww ~/.local/scripts/session.sh<CR>", { desc = "Tmux Session Picker" })
+map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
+map("n", "<C-s>", "<cmd>write ++p<CR>", { desc = "Save file" })
+map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
+map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Diagnostics to location list" })
+map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 
--- Buffer management
-map("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close Buffer" })
+map("n", "[d", function()
+	vim.diagnostic.jump({ count = -1, float = true })
+end, { desc = "Previous diagnostic" })
 
--- Move lines in visual mode
-map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move Selection Down" })
-map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move Selection Up" })
+map("n", "]d", function()
+	vim.diagnostic.jump({ count = 1, float = true })
+end, { desc = "Next diagnostic" })
 
--- Keep cursor centered on scroll/search
-map("n", "<C-d>", "<C-d>zz", { desc = "Scroll Down (Centered)" })
-map("n", "<C-u>", "<C-u>zz", { desc = "Scroll Up (Centered)" })
-map("n", "n", "nzzzv", { desc = "Next Search (Centered)" })
-map("n", "N", "Nzzzv", { desc = "Prev Search (Centered)" })
+map("n", "<C-h>", "<C-w><C-h>", { desc = "Window left" })
+map("n", "<C-j>", "<C-w><C-j>", { desc = "Window down" })
+map("n", "<C-k>", "<C-w><C-k>", { desc = "Window up" })
+map("n", "<C-l>", "<C-w><C-l>", { desc = "Window right" })
 
--- Terminal escape
-map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit Terminal Mode" })
+map("n", "<C-d>", "<C-d>zz", { desc = "Scroll down centered" })
+map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up centered" })
+map("n", "n", "nzzzv", { desc = "Next search centered" })
+map("n", "N", "Nzzzv", { desc = "Previous search centered" })
 
--- Better paste in visual mode (don't yank replaced text)
-map("x", "<leader>p", [["_dP]], { desc = "Paste Without Yank" })
+map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
--- Quick save (++p auto-creates parent directories, neovim 0.12)
-map("n", "<C-s>", "<cmd>w ++p<CR>", { desc = "Save File" })
-
--- DAP breakpoint toggle -- map every possible F9 keycode for Ghostty compatibility
--- Ghostty may send F9 as <F9>, <F21>, or a CSI u sequence depending on config
-for _, key in ipairs({ "<F9>", "<F21>", "<F33>" }) do
-  map("n", key, function() require("dap").toggle_breakpoint() end, { desc = "Toggle Breakpoint" })
-end
-
--- Built-in undo tree visualizer (neovim 0.12)
-map("n", "<leader>uu", "<cmd>Undotree<CR>", { desc = "Undo Tree" })
+map("x", "<leader>p", [[:_dP]], { desc = "Paste without yanking replaced text" })
+map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })

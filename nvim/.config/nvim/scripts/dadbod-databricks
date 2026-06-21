@@ -172,7 +172,7 @@ append_rows() {
   if ((raw)); then
     jq -r "$filter | .[] | @tsv" "$file" >>"$tsv_file"
   else
-    jq -r "$filter | .[] | map(if . == null then \"NULL\" else . end) | @tsv" "$file" >>"$tsv_file"
+    jq -r "$filter | .[] | map(if . == null then "NULL" else . end) | @tsv" "$file" >>"$tsv_file"
   fi
 }
 
