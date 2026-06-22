@@ -1,77 +1,71 @@
+# Zsh autocomplete and history setup.
+if type brew >/dev/null 2>&1; then
+  brew_prefix="$(brew --prefix)"
+  FPATH="$brew_prefix/share/zsh-completions:$FPATH"
+fi
 
-# Kiro CLI pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
+# PATH entries from previous zsh config.
+export PATH="$PATH:$HOME/bin"
+if command -v go >/dev/null 2>&1; then
+  export PATH="$(go env GOPATH)/bin:$PATH"
+fi
 
-# =========================
-# ZSHRC (fixed + ordered)
-# =========================
-
-# If this isn't an interactive shell (e.g., zsh -c, some tools, nvim jobs),
-# don't run completion/plugin init that can explode.
-[[ -o interactive ]] || return 0
-
-# --- Zsh completion (must be early) ---
-fpath+="$(brew --prefix)/share/zsh/site-functions"
 autoload -Uz compinit
 compinit
 
-# -------------------------
-# Kiro CLI pre block. Keep at the top of this file.
-# -------------------------
+# Better completion behavior.
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
-# -------------------------
-# PATH
-# -------------------------
-export PATH="$PATH:$HOME/bin"
-export PATH="$(go env GOPATH)/bin:$PATH"
+if [[ -t 0 && -t 1 ]]; then
+  # fzf key bindings and shell integration.
+  if command -v fzf >/dev/null 2>&1; then
+    eval "$(fzf --zsh)"
+  fi
 
-# -------------------------
-# Plugins (if you're using oh-my-zsh / similar)
-# NOTE: this line alone doesn't load plugins unless a framework loads them.
-# -------------------------
-plugins=(
-  git
-  aws
-  terraform
-  kubectl
-  vscode
-  azure
-  terragrunt
-)
+  # Fuzzy tab completion.
+  if [[ -n "$brew_prefix" && -r "$brew_prefix/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh" ]]; then
+    source "$brew_prefix/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh"
+  fi
 
-# -------------------------
-# Aliases
-# -------------------------
-alias tg="terragrunt"
+  # Inline autosuggestions from shell history.
+  if [[ -n "$brew_prefix" && -r "$brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+    source "$brew_prefix/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  fi
 
-# -------------------------
-# Tools init
-# -------------------------
-eval "$(zoxide init zsh)"
-eval "$(starship init zsh)"
+  # Atuin history search.
+  if command -v atuin >/dev/null 2>&1; then
+    eval "$(atuin init zsh)"
+  fi
 
-# -------------------------
-# Terraform completion
-# Prefer native terraform autocomplete when possible.
-# (Avoid bash 'complete' unless you truly need it.)
-# -------------------------
-if command -v terraform >/dev/null 2>&1; then
-  # Try terraform native autocomplete (recommended)
-  # If your terraform doesn't support this, comment it and use the bashcompinit block below.
-  terraform -install-autocomplete >/dev/null 2>&1
+  # Smarter directory jumping.
+  if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+  fi
 
-  # OPTIONAL fallback (only if you *must* use the bash-style completion):
-  # autoload -U +X bashcompinit && bashcompinit
-  # complete -o nospace -C /opt/homebrew/bin/terraform terraform
+  # Terragrunt alias from previous config.
+  if command -v terragrunt >/dev/null 2>&1; then
+    alias tg="terragrunt"
+  fi
+
+  # Terraform completion from previous config.
+  if [[ -x /opt/homebrew/bin/terraform ]]; then
+    autoload -U +X bashcompinit && bashcompinit
+    complete -o nospace -C /opt/homebrew/bin/terraform terraform
+  fi
+
+  # Edit the current command line in Neovim with Ctrl-x Ctrl-e.
+  if command -v nvim >/dev/null 2>&1; then
+    export EDITOR="nvim"
+    export VISUAL="nvim"
+    autoload -Uz edit-command-line
+    zle -N edit-command-line
+    bindkey "^X^E" edit-command-line
+  fi
+
+  # Starship prompt.
+  if command -v starship >/dev/null 2>&1; then
+    eval "$(starship init zsh)"
+  fi
+
 fi
-
-# -------------------------
-# Kiro CLI post block. Keep at the bottom of this file.
-# -------------------------
-
-autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /opt/homebrew/bin/terraform terraform
-
-
-# Kiro CLI post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
