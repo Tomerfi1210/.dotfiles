@@ -88,6 +88,7 @@ local plugins = {
 	gh("tpope/vim-dadbod"),
 	gh("kristijanhusak/vim-dadbod-ui"),
 	gh("kristijanhusak/vim-dadbod-completion"),
+	gh("christoomey/vim-tmux-navigator"),
 	{ src = gh("L3MON4D3/LuaSnip"), version = vim.version.range("2.*") },
 	{ src = gh("saghen/blink.cmp"), version = vim.version.range("1.*") },
 	gh("nvim-treesitter/nvim-treesitter"),
