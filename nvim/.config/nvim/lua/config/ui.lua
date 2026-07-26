@@ -183,6 +183,11 @@ require("lualine").setup({
 	extensions = { "quickfix", "man", "nvim-dap-ui", "oil" },
 })
 
+require("treesitter-context").setup({
+	max_lines = 3,
+	trim_scope = "outer",
+})
+
 vim.keymap.set("n", "<leader>nh", "<cmd>Noice history<CR>", { desc = "Noice history" })
 vim.keymap.set("n", "<leader>nl", "<cmd>Noice last<CR>", { desc = "Noice last message" })
 vim.keymap.set("n", "<leader>ne", "<cmd>Noice errors<CR>", { desc = "Noice errors" })

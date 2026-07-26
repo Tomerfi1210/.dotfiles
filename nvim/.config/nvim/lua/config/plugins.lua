@@ -85,6 +85,7 @@ local plugins = {
 	gh("nvim-neotest/neotest-python"),
 	gh("fredrikaverpil/neotest-golang"),
 	gh("nvim-treesitter/nvim-treesitter-textobjects"),
+	gh("nvim-treesitter/nvim-treesitter-context"),
 	gh("tpope/vim-dadbod"),
 	gh("kristijanhusak/vim-dadbod-ui"),
 	gh("kristijanhusak/vim-dadbod-completion"),
