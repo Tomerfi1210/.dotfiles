@@ -6,6 +6,10 @@ map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Diagnostics to location list" })
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 
+if vim.env.TMUX then
+	map("n", "<C-f>", "<cmd>silent !tmux neww ~/.local/scripts/session.sh<CR>", { desc = "Tmux session picker" })
+end
+
 map("n", "[d", function()
 	vim.diagnostic.jump({ count = -1, float = true })
 end, { desc = "Previous diagnostic" })
