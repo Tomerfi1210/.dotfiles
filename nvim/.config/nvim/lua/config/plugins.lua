@@ -57,6 +57,7 @@ local plugins = {
 	gh("nvim-telescope/telescope.nvim"),
 	gh("nvim-telescope/telescope-ui-select.nvim"),
 	gh("lewis6991/gitsigns.nvim"),
+	gh("sindrets/diffview.nvim"),
 	gh("folke/which-key.nvim"),
 	gh("folke/tokyonight.nvim"),
 	gh("j-hui/fidget.nvim"),

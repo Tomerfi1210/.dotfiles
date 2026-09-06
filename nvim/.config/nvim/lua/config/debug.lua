@@ -64,6 +64,37 @@ end
 local debugpy = vim.fn.exepath("debugpy-adapter")
 require("dap-python").setup(debugpy ~= "" and debugpy or "debugpy-adapter")
 
+local codelldb = vim.fn.exepath("codelldb")
+dap.adapters.codelldb = {
+	type = "server",
+	port = "${port}",
+	executable = {
+		command = codelldb ~= "" and codelldb or "codelldb",
+		args = { "--port", "${port}" },
+	},
+}
+local cpp_configurations = {
+	{
+		name = "Launch executable",
+		type = "codelldb",
+		request = "launch",
+		program = function()
+			return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+		end,
+		cwd = "${workspaceFolder}",
+		stopOnEntry = false,
+	},
+	{
+		name = "Attach to process",
+		type = "codelldb",
+		request = "attach",
+		pid = require("dap.utils").pick_process,
+		cwd = "${workspaceFolder}",
+	},
+}
+dap.configurations.c = cpp_configurations
+dap.configurations.cpp = cpp_configurations
+
 local function get_args(config)
 	local args = type(config.args) == "function" and (config.args() or {}) or config.args or {}
 	local args_string = type(args) == "table" and table.concat(args, " ") or args

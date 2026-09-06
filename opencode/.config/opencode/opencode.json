@@ -1,0 +1,36 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "mcp": {
+        "notion": {
+            "enabled": false,
+            "type": "remote",
+            "url": "https://mcp.notion.com/mcp"
+        },
+        "jira": {
+            "enabled": false,
+            "type": "remote",
+            "url": "https://mcp.atlassian.com/v1/mcp"
+        },
+        "gitlab": {
+            "enabled": false,
+            "type": "remote",
+            "url": "https://gitlab.com/api/v4/mcp"
+        },
+        "coralogix": {
+            "enabled": true,
+            "type": "remote",
+            "url": "https://api.eu2.coralogix.com/mgmt/api/v1/mcp",
+            "oauth": {}
+        }
+    },
+    "agent": {
+        "build": {
+            "permission": {
+                "skill": {
+                    "conventional-commits": "allow",
+                    "prepare-commit-changes": "allow"
+                }
+            }
+        }
+    }
+}

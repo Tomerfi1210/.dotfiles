@@ -1,3 +1,4 @@
+local cpp = require("config.languages.cpp")
 local go = require("config.languages.go")
 local python = require("config.languages.python")
 
@@ -13,7 +14,7 @@ local formatters_by_ft = vim.tbl_deep_extend("force", {
 	toml = { "taplo" },
 	terraform = { "terraform_fmt" },
 	hcl = { "terraform_fmt" },
-}, go.formatters_by_ft, python.formatters_by_ft)
+}, cpp.formatters_by_ft, go.formatters_by_ft, python.formatters_by_ft)
 
 require("conform").setup({
 	notify_on_error = false,

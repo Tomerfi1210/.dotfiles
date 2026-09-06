@@ -1,3 +1,4 @@
+local cpp = require("config.languages.cpp")
 local go = require("config.languages.go")
 local python = require("config.languages.python")
 local search = require("config.search")
@@ -113,7 +114,7 @@ local base_servers = {
 	terraformls = {},
 }
 
-local servers = vim.tbl_deep_extend("force", {}, base_servers, go.servers, python.servers)
+local servers = vim.tbl_deep_extend("force", {}, base_servers, cpp.servers, go.servers, python.servers)
 
 local ensure_installed = {
 	"lua-language-server",
@@ -127,6 +128,7 @@ local ensure_installed = {
 	"prettierd",
 	"shfmt",
 }
+vim.list_extend(ensure_installed, cpp.mason)
 vim.list_extend(ensure_installed, go.mason)
 vim.list_extend(ensure_installed, python.mason)
 
@@ -168,6 +170,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("<leader>cL", function()
 			vim.lsp.codelens.enable(true, { bufnr = event.buf })
 		end, "Refresh code lens")
+		if client.name == "clangd" then
+			map("<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", "Switch source/header")
+		end
 
 		if client:supports_method("textDocument/documentHighlight", event.buf) then
 			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {

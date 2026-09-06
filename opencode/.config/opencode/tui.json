@@ -1,0 +1,5 @@
+{
+  "$schema": "https://opencode.ai/tui.json",
+  "theme": "tokyonight",
+  "plugin": ["./plugin/quota-usage.tsx", "./plugin/skills-sidebar.tsx"]
+}

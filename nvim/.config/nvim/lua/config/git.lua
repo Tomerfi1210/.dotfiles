@@ -2,6 +2,7 @@ local telescope_config = require("telescope.config").values
 local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
 local previewers = require("telescope.previewers")
+local diffview_actions = require("diffview.actions")
 
 local function git_output(args)
 	local output = vim.fn.systemlist(args)
@@ -61,6 +62,94 @@ local function git_default_branch(root)
 			return branch
 		end
 	end
+end
+
+local function git_remote_url(root)
+	local remotes = git_output({ "git", "-C", root, "remote" }) or {}
+	if vim.tbl_contains(remotes, "origin") then
+		remotes = vim.tbl_filter(function(remote)
+			return remote ~= "origin"
+		end, remotes)
+		table.insert(remotes, 1, "origin")
+	end
+
+	for _, remote in ipairs(remotes) do
+		local url = git_first_line({ "git", "-C", root, "config", "--get", "remote." .. remote .. ".url" })
+		if url then
+			return url
+		end
+	end
+end
+
+local function web_repository_url(remote)
+	local host, path = remote:match("^https?://[^@/]+@([^/]+)/(.+)$")
+	if not host then
+		host, path = remote:match("^https?://([^/]+)/(.+)$")
+	end
+	if not host then
+		host, path = remote:match("^ssh://[^@/]+@([^/:]+):%d+/(.+)$")
+	end
+	if not host then
+		host, path = remote:match("^ssh://[^@/]+@([^/]+)/(.+)$")
+	end
+	if not host then
+		host, path = remote:match("^git@([^:]+):(.+)$")
+	end
+
+	if not host or (host ~= "github.com" and host ~= "gitlab.com") then
+		return nil
+	end
+
+	path = path:gsub("/$", ""):gsub("%.git$", "")
+	return path ~= "" and "https://" .. host .. "/" .. path or nil
+end
+
+local function url_escape(value)
+	return (value:gsub("[^%w%-%._~/]", function(char)
+		return ("%%%02X"):format(char:byte())
+	end))
+end
+
+local function git_open_current_file()
+	local file = vim.api.nvim_buf_get_name(0)
+	local root = git_root()
+	if file == "" or not root then
+		vim.notify("Current buffer is not in a git repository", vim.log.levels.ERROR)
+		return
+	end
+
+	local remote = git_remote_url(root)
+	if not remote then
+		vim.notify("No git remote found", vim.log.levels.ERROR)
+		return
+	end
+
+	local repository = web_repository_url(remote)
+	if not repository then
+		vim.notify("Unsupported git remote: " .. remote, vim.log.levels.ERROR)
+		return
+	end
+
+	local relative = vim.fs.relpath(root, file)
+	if not relative then
+		vim.notify("Could not determine file path relative to git root", vim.log.levels.ERROR)
+		return
+	end
+
+	if vim.fn.has("mac") ~= 1 or vim.fn.executable("open") ~= 1 then
+		vim.notify("macOS browser command 'open' is unavailable", vim.log.levels.ERROR)
+		return
+	end
+
+	local branch = git_current_branch(root) or "HEAD"
+	local url = ("%s/blob/%s/%s#L%d"):format(repository, url_escape(branch), url_escape(relative), vim.fn.line("."))
+	vim.system({ "open", url }, { detach = true }, function(result)
+		if result.code ~= 0 then
+			vim.schedule(function()
+				vim.notify("Could not open git URL in browser", vim.log.levels.ERROR)
+			end)
+		end
+	end)
 end
 
 local function git_diff_default_branch()
@@ -143,6 +232,38 @@ local function lazygit(cwd)
 	vim.cmd.startinsert()
 end
 
+local function git_line_history()
+	local line = vim.fn.line(".")
+	vim.cmd(("%d,%dDiffviewFileHistory"):format(line, line))
+end
+
+require("diffview").setup({
+	enhanced_diff_hl = true,
+	view = {
+		default = { layout = "diff2_horizontal" },
+		merge_tool = { layout = "diff3_mixed" },
+		file_history = { layout = "diff2_horizontal" },
+	},
+	file_panel = {
+		listing_style = "tree",
+		win_config = { position = "left", width = 35 },
+	},
+	keymaps = {
+		view = {
+			{ "n", "<leader>ca", false },
+			{ "n", "<leader>cM", diffview_actions.conflict_choose("all"), { desc = "Choose all conflict versions" } },
+		},
+		file_panel = {
+			{ "n", "<leader>e", false },
+			{ "n", "<leader>ge", diffview_actions.focus_files, { desc = "Focus Git files" } },
+		},
+		file_history_panel = {
+			{ "n", "<leader>e", false },
+			{ "n", "<leader>ge", diffview_actions.focus_files, { desc = "Focus Git files" } },
+		},
+	},
+})
+
 vim.keymap.set("n", "<leader>gg", function()
 	lazygit(git_root())
 end, { desc = "Lazygit root dir" })
@@ -152,6 +273,11 @@ vim.keymap.set("n", "<leader>gG", function()
 end, { desc = "Lazygit cwd" })
 
 vim.keymap.set("n", "<leader>gD", git_diff_default_branch, { desc = "Git diff default branch" })
+vim.keymap.set("n", "<leader>go", git_open_current_file, { desc = "Open file in git browser" })
+vim.keymap.set("n", "<leader>gv", "<cmd>DiffviewOpen<CR>", { desc = "Git diff view" })
+vim.keymap.set("n", "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", { desc = "Git file history" })
+vim.keymap.set("n", "<leader>gl", git_line_history, { desc = "Git line history" })
+vim.keymap.set("v", "<leader>gl", ":DiffviewFileHistory<CR>", { desc = "Git selection history" })
 
 require("gitsigns").setup({
 	signs = {
