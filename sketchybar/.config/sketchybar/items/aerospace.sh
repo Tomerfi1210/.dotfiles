@@ -6,6 +6,13 @@ WORKSPACES=$(aerospace list-workspaces --all)
 AGGREGATED=$(echo "$WORKSPACES" | awk '{print "space." $1}' | paste -sd ' ' -)
 
 for sid in $WORKSPACES; do
+    case "$sid" in
+        1) workspace_label="1 Ghostty" ;;
+        2) workspace_label="2 Chrome" ;;
+        3) workspace_label="3 Slack" ;;
+        *) workspace_label="$sid" ;;
+    esac
+
     sketchybar --add item space."$sid" left \
         --subscribe space."$sid" aerospace_workspace_change \
         --set space."$sid" \
@@ -15,7 +22,7 @@ for sid in $WORKSPACES; do
         background.drawing=off \
         background.padding_left=3 \
         background.padding_right=3 \
-        label="$sid" \
+        label="$workspace_label" \
         label.color="$FG_DARK" \
         click_script="aerospace workspace $sid" \
         script="$PLUGIN_DIR/aerospace.sh $sid"
