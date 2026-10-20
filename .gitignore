@@ -1,1 +1,6 @@
 tmux/.config/tmux/plugins
+scripts/.local/share/opencode/
+scripts/.local/state/opencode/
+opencode/.config/opencode/node_modules/
+opencode/.config/opencode/package-lock.json
+opencode/.config/opencode/.env*

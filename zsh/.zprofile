@@ -13,7 +13,6 @@ source ~/zesty/tomer/.venv/bin/activate
 code() { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args "$*"; }
 
 export K9S_CONFIG_DIR="$HOME/.config/k9s"
-export TERM="tmux-256color"
 export NVIM_THEME="catppuccin"
 export KUBE_EDITOR="nvim"
 alias sso='aws sso login --sso-session zesty'
@@ -29,4 +28,3 @@ source <(fzf --zsh)
 # The original version is saved in .zprofile.pysave
 PATH="/Library/Frameworks/Python.framework/Versions/3.11/bin:${PATH}"
 export PATH
-

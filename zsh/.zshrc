@@ -68,4 +68,11 @@ if [[ -t 0 && -t 1 ]]; then
     eval "$(starship init zsh)"
   fi
 
+  # Word movement/deletion for Option/Alt keys.
+  bindkey "^[b" backward-word
+  bindkey "^[f" forward-word
+  bindkey "^[[1;3D" backward-word
+  bindkey "^[[1;3C" forward-word
+  bindkey "^[^?" backward-kill-word
+
 fi

@@ -1,5 +1,7 @@
 after-login-command = []
-after-startup-command = ['exec-and-forget sketchybar --reload']
+after-startup-command = [
+  'exec-and-forget sketchybar --reload',
+]
 
 exec-on-workspace-change = [
   '/bin/bash',
@@ -100,6 +102,10 @@ if.app-name-regex-substring = 'ghostty'
 run = 'move-node-to-workspace 1'
 
 [[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
 if.app-name-regex-substring = 'brave'
 run = 'move-node-to-workspace 2'
 
@@ -129,7 +135,7 @@ run = 'move-node-to-workspace 6'
 
 [[on-window-detected]]
 if.app-name-regex-substring = 'openvpn'
-run = 'move-node-to-workspace 7'
+run = 'move-node-to-workspace 4'
 
 [[on-window-detected]]
 if.app-name-regex-substring = 'gimp'
