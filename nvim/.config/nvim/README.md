@@ -6,7 +6,8 @@ Minimal Neovim 0.12 config using native `vim.pack`. No LazyVim, no `lazy.nvim`.
 
 - Go: `gopls`, `goimports`, `gofumpt`, `delve`, `nvim-dap-go`, `neotest-golang`
 - Python: `basedpyright`, `ruff`, `debugpy`, `nvim-dap-python`, `neotest-python`
-- Core editing/UI: Telescope, Treesitter, Blink completion, Conform formatting, Gitsigns, Oil, Overseer, Noice, Notify, mini.ai, mini.surround
+- C/C++: `clangd`, `clang-format`, `codelldb`
+- Core editing/UI: Telescope, Treesitter, Blink completion, Conform formatting, Gitsigns, Diffview, Oil, Overseer, Noice, Notify, mini.ai, mini.surround
 - Debugging: `nvim-dap`, DAP UI, virtual text, F-key and `<leader>d` mappings
 
 ## Check
