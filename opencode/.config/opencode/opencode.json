@@ -1,34 +1,113 @@
 {
     "$schema": "https://opencode.ai/config.json",
-    "mcp": {
-        "notion": {
-            "enabled": false,
-            "type": "remote",
-            "url": "https://mcp.notion.com/mcp"
+    "permissions": [
+        {
+            "action": "external_directory",
+            "resource": "~/**",
+            "effect": "deny"
         },
-        "jira": {
-            "enabled": false,
-            "type": "remote",
-            "url": "https://mcp.atlassian.com/v1/mcp"
+        {
+            "action": "external_directory",
+            "resource": "~/Work/**",
+            "effect": "allow"
         },
-        "gitlab": {
-            "enabled": false,
-            "type": "remote",
-            "url": "https://gitlab.com/api/v4/mcp"
+        {
+            "action": "external_directory",
+            "resource": "~/.config/**",
+            "effect": "allow"
         },
-        "coralogix": {
-            "enabled": true,
-            "type": "remote",
-            "url": "https://api.eu2.coralogix.com/mgmt/api/v1/mcp",
-            "oauth": {}
+        {
+            "action": "external_directory",
+            "resource": "/Users/tomerfisher/zesty/pod-rightsizing/*",
+            "effect": "allow"
+        },
+        {
+            "action": "external_directory",
+            "resource": "/Users/tomerfisher/zesty/kompass-spoke/*",
+            "effect": "allow"
+        },
+        {
+            "action": "external_directory",
+            "resource": "/Users/tomerfisher/zesty/*",
+            "effect": "allow"
+        },
+        {
+            "action": "databricks-production_*",
+            "resource": "*",
+            "effect": "deny"
+        },
+        {
+            "action": "databricks-production_execute_sql",
+            "resource": "*",
+            "effect": "allow"
+        },
+        {
+            "action": "databricks-production_execute_sql_multi",
+            "resource": "*",
+            "effect": "allow"
+        },
+        {
+            "action": "databricks-production_manage_warehouse",
+            "resource": "*",
+            "effect": "allow"
+        },
+        {
+            "action": "databricks-production_get_table_stats_and_schema",
+            "resource": "*",
+            "effect": "allow"
         }
-    },
-    "agent": {
-        "build": {
-            "permission": {
-                "skill": {
-                    "conventional-commits": "allow",
-                    "prepare-commit-changes": "allow"
+    ],
+    "mcp": {
+        "servers": {
+            "notion": {
+                "disabled": false,
+                "type": "remote",
+                "url": "https://mcp.notion.com/mcp"
+            },
+            "jira": {
+                "disabled": false,
+                "type": "remote",
+                "url": "https://mcp.atlassian.com/v2/mcp"
+            },
+            "coralogix": {
+                "disabled": true,
+                "type": "remote",
+                "url": "https://api.eu2.coralogix.com/mgmt/api/v1/mcp"
+            },
+            "coralogix_dev": {
+                "type": "remote",
+                "url": "https://api.eu2.coralogix.com/mgmt/api/v1/mcp"
+            },
+            "databricks-production": {
+                "type": "local",
+                "command": [
+                    "/Users/tomerfisher/zesty/databricks-ai-dev-kit/.venv/bin/python",
+                    "/Users/tomerfisher/zesty/databricks-ai-dev-kit/databricks-mcp-server/run_server.py"
+                ],
+                "cwd": "/Users/tomerfisher/zesty/databricks-ai-dev-kit",
+                "environment": {
+                    "DATABRICKS_CONFIG_PROFILE": "zesty-production",
+                    "DATABRICKS_CLI_PATH": "/opt/homebrew/bin/databricks",
+                    "FASTMCP_CHECK_FOR_UPDATES": "off",
+                    "FASTMCP_ENV_FILE": "/dev/null"
+                }
+            },
+            "google-docs": {
+                "type": "remote",
+                "url": "https://docsmcp.googleapis.com/mcp/v1",
+                "oauth": {
+                    "client_id": "{file:~/.local/share/opencode/secrets/google-docs/client_id}",
+                    "client_secret": "{file:~/.local/share/opencode/secrets/google-docs/client_secret}",
+                    "callback_port": 19876,
+                    "redirect_uri": "http://127.0.0.1:19876/callback",
+                    "scope": "https://www.googleapis.com/auth/documents.readonly"
+                }
+            },
+            "overcut": {
+                "type": "remote",
+                "url": "https://chat.overcut.ai/api/mcp",
+                "headers": {
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOiJjbXczbGJkcnUwMHF2ZmY1Mmx6dTVpbTNhIiwidXNlcklkIjoiY213M2xkMmFuMDByamZmNTI0a2RlZzdmayIsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOlsiKiJdLCJ3b3Jrc3BhY2VJZCI6ImNtZmNnbzZsZjAwMGxxb2w3OXp2amRsdWUiLCJ0eXBlIjoiQXBpVG9rZW4iLCJ0b2tlbklkIjoiY213M21xczZnMDAwbjAxaXYxNDVhN3dlaSIsImlkcCI6Imdvb2dsZSIsImlhdCI6MTc5Mzg4ODI0NCwiZXhwIjo0OTQ5NjQ4MjQ0fQ.TwEW2N8b4Ycv2FE30bceZXJJ0gMst0PkeuZFr7YsldI"
                 }
             }
         }
