@@ -65,6 +65,7 @@ if [[ -t 0 && -t 1 ]]; then
 
   # Starship prompt.
   if command -v starship >/dev/null 2>&1; then
+    export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
     eval "$(starship init zsh)"
   fi
 
